@@ -1,0 +1,88 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String           @id @default(uuid())
+  email       String           @unique
+  name        String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  profile     Profile?
+  searches    SavedSearch[]
+  offers      OfferLetter[]
+  mortgage    MortgageProfile?
+  documents   Document[]
+  buyerTasks  BuyerTask[]
+}
+
+model Profile {
+  id         String   @id @default(uuid())
+  userId     String   @unique
+  buyerType  String
+  budgetMin  Int
+  budgetMax  Int
+  locations  String[]
+  user       User     @relation(fields: [userId], references: [id])
+}
+
+model SavedSearch {
+  id         String   @id @default(uuid())
+  userId     String
+  location   String
+  budgetMin  Int
+  budgetMax  Int
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+}
+
+model MortgageProfile {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  income      Int
+  debt        Int
+  creditScore Int
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+model OfferLetter {
+  id           String   @id @default(uuid())
+  userId       String
+  propertyId   String
+  offerAmount  Int
+  status       String
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id])
+}
+
+model ServiceProvider {
+  id       String   @id @default(uuid())
+  name     String
+  type     String   // e.g. 'Inspector', 'Lawyer', 'Contractor'
+  phone    String
+  email    String
+}
+
+model Document {
+  id         String   @id @default(uuid())
+  userId     String
+  fileName   String
+  fileUrl    String
+  uploadedAt DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+}
+
+model BuyerTask {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  status    String   // e.g. 'Pending', 'Complete'
+  dueDate   DateTime
+  user      User     @relation(fields: [userId], references: [id])
+}
