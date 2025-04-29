@@ -1,6 +1,6 @@
 
 const admin = require('firebase-admin');
-const serviceAccount = require('../firebase-service-account.json'); // Replace with your credentials
+const serviceAccount = require('../homigo-d47c2-firebase-adminsdk-fbsvc-bbcc54f153.json'); // Replace with your credentials
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
